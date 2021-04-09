@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Database Write Aside - Event Streaming Patterns</title>
+  <title>Event Processor - Event Streaming Patterns</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Database Write Aside";
-    var mkdocs_page_input_path = "event-source/database-write-aside.md";
+    var mkdocs_page_name = "Event Processor";
+    var mkdocs_page_input_path = "event-processing/event-processor.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -52,16 +52,28 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event processing</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/dead-letter-stream/">Dead Letter Stream</a>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../dead-letter-stream/">Dead Letter Stream</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-filter/">Event Filter</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-filter/">Event Filter</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-mapper/">Event Mapper</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-mapper/">Event Mapper</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-processor/">Event Processor</a>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Event Processor</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#solution">Solution</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#considerations">Considerations</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
+    </li>
+    </ul>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-router/">Event Router</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-router/">Event Router</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event sink</span></p>
@@ -72,26 +84,14 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event source</span></p>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Database Write Aside</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#solution-pattern">Solution Pattern</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#example-implementation">Example Implementation</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#considerations">Considerations</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
-    </li>
-    </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/database-write-aside/">Database Write Aside</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../database-write-through/">Database Write Through</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/database-write-through/">Database Write Through</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-source-connector/">Event Source Connector</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/event-source-connector/">Event Source Connector</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-source/">Event Source</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/event-source/">Event Source</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event storage</span></p>
@@ -127,11 +127,11 @@
     
       
         
-          <li>Event source &raquo;</li>
+          <li>Event processing &raquo;</li>
         
       
     
-    <li>Database Write Aside</li>
+    <li>Event Processor</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -142,38 +142,22 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="database-write-aside">Database Write Aside</h1>
+                <h1 id="event-processor">Event Processor</h1>
+<p>TODO: Short (2 sentence max) description that describes the pattern generally. Consider explaining situations in which the pattern might be applied.</p>
 <h2 id="problem">Problem</h2>
-<p>How do I update a value in a database and create an associated event with the least amount of effort?</p>
-<h2 id="solution-pattern">Solution Pattern</h2>
-<p><img alt="database-write-aside" src="../../img/database-write-aside.png" />
-Write to a database, then write to Kafka. Perform the write to Kafka as the last step in a database transaction to ensure an atomic dual commit (aborting the transaction if the write to Kafka fails). </p>
-<h2 id="example-implementation">Example Implementation</h2>
-<pre><code>//Enable transactions
-db.setAutoCommit(false);
-
-try{
-   //insert into the DB
-   sql = db.prepareStatement(&quot;insert mydb.events values (?)&quot;);
-   sql.setString(event.toString());
-   sql.executeUpdate();
-
-   //insert into Kafka
-   producer.send(event.key(), event.value());
-
-   //commit to the DB
-   db.commit();
-} catch (SQLException e ) {
-   db.rollback();
-}
-</code></pre>
-
+<p>TODO: Technology agnostic English explanation of the problem</p>
+<h2 id="solution">Solution</h2>
+<p><img alt="event-processor" src="../../img/event-processor.png" />
+TODO: Provide a technology agnostic diagram and supporting text explaining the pattern's implementation (placing the diagram first).</p>
+<h2 id="implementation">Implementation</h2>
+<p>TODO: Technology specific code example, ksqlDB preferred. (Not every pattern will have code)</p>
 <h2 id="considerations">Considerations</h2>
-<p>In its default form, this pattern guarantees dual-write for most use cases. However, should the database transaction fail at commit time (say, because the database server has crashed) the write to Kafka cannot be rolled back unless transactions have been enabled. For many use cases, this eventuality will be tolerable as the dual-write can be retried once the failure is fixed, and most event consumers will implement idempotence anyway. However, application programmers need to be aware that there is no firm guarantee. </p>
-<p>Transactional messaging systems like Kafka can be used to provide stronger guarantees so long as all event consumers have the transactions feature enabled. </p>
+<p>TODO: Technology specific reflection on implmenting the pattern 'in the real world'. Considerations may include optional subsequent decisions or consequences of implementing the pattern.</p>
 <h2 id="references">References</h2>
 <ul>
-<li>TODO: Add references?</li>
+<li>TODO: Reference link to the EIP pattern as citation</li>
+<li>TODO: pointers to related patterns?</li>
+<li>TODO: pointers to external material?</li>
 </ul>
               
             </div>
@@ -182,10 +166,10 @@ try{
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../database-write-through/" class="btn btn-neutral float-right" title="Database Write Through">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../event-router/" class="btn btn-neutral float-right" title="Event Router">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../event-sink/event-sink/" class="btn btn-neutral" title="Event Sink"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../event-mapper/" class="btn btn-neutral" title="Event Mapper"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -211,10 +195,10 @@ try{
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../event-sink/event-sink/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../event-mapper/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../database-write-through/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../event-router/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
