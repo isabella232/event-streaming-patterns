@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Database Write Through - Event Streaming Patterns</title>
+  <title>Event Collaboration - Event Streaming Patterns</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Database Write Through";
-    var mkdocs_page_input_path = "event-source/database-write-through.md";
+    var mkdocs_page_name = "Event Collaboration";
+    var mkdocs_page_input_path = "compositional-patterns/event-collaboration.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -52,10 +52,20 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Compositional patterns</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-collaboration/">Event Collaboration</a>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Event Collaboration</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#solution">Solution</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#considerations">Considerations</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
+    </li>
+    </ul>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-stream-observer/">Event Stream Observer</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-stream-observer/">Event Stream Observer</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event</span></p>
@@ -92,26 +102,14 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event source</span></p>
-                <ul class="current">
-                    <li class="toctree-l1"><a class="reference internal" href="../database-write-aside/">Database Write Aside</a>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/database-write-aside/">Database Write Aside</a>
                     </li>
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Database Write Through</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#solution">Solution</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#considerations">Considerations</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
-    </li>
-    </ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/database-write-through/">Database Write Through</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-source-connector/">Event Source Connector</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/event-source-connector/">Event Source Connector</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-source/">Event Source</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/event-source/">Event Source</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event storage</span></p>
@@ -158,11 +156,11 @@
     
       
         
-          <li>Event source &raquo;</li>
+          <li>Compositional patterns &raquo;</li>
         
       
     
-    <li>Database Write Through</li>
+    <li>Event Collaboration</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -173,26 +171,19 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="database-write-through">Database Write Through</h1>
-<p>For architectural or legacy purposes, data centric applications may write directly to a database. <a href="../../event-processing/event-processing-application/">Event Processing Applications</a> will need to reliably consume data from these systems using <a href="../../event/event/">Events</a> on <a href="../../event-stream/event-stream/">Event Streams</a>.</p>
+                <h1 id="event-collaboration">Event Collaboration</h1>
+<p>Building distributed business workflows requires coordinating multiple services and <a href="../../event-processing/event-processing-application/">Event Processing Applications</a>. Business actions and reactions must be coordinated asynchronously as complex workflows transition through various states.</p>
 <h2 id="problem">Problem</h2>
-<p>How do I update a value in a database and create an associated Event with at-least-once guarantees?</p>
+<p>How can I build a distributed workflow in a way that allows components to evolve independently? </p>
 <h2 id="solution">Solution</h2>
-<p><img alt="db-write-through" src="../../img/database-write-through.png" /></p>
-<p>Applications write directly to a database table, which is the <a href="../event-source/">Event Source</a>. Deploy a Change Data Capture (CDC) solution to continuously capture writes (inserts, updates, deletes) to that table and produce them as Events onto an Event Stream.  The events in stream can then be consumed by Event Processing Applications. Additionally, the event stream can be read into a Projection Table, for example with ksqlDB, so that it can be queried by other applications.</p>
-<h2 id="implementation">Implementation</h2>
-<p><strong>TODO:</strong> Implementation for this pattern?  Kafka Connect config / create example?</p>
+<p><img alt="event-collaboration" src="../../img/event-collaboration.png" /></p>
+<p>Event Collaboration allows services and applications to collaborate around a single business workflow on top of an <a href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>. Service components publish <a href="../event/events.md">Events</a> to <a href="../event-stream/event-streams.md">Event Streams</a> as notification of the completion of a step in the workflow. Stream Processing Applications observe the Events and trigger subsequent actions and resulting Events. The process repeats until the complex workflow is complete.</p>
 <h2 id="considerations">Considerations</h2>
-<ul>
-<li>This pattern is a specialization of the <a href="../event-source-connector/">Event Source Connector</a> that guarantees that all state changes represented in an Event Source are captured in an Event Streaming Platform.</li>
-<li>The processing guarantees (cf. "Guaranteed Delivery") to choose from—e.g., at-least-once, exactly-once—for the CDC data flow depend on the CDC and Database technology utilizied.</li>
-<li>There is a certain delay until changes in the source database table are available in the CDC-ingested event stream. The amount of the delay depends on a variety of factors, including the features and configuration of the Event Source Connector. In many typical scenarios the delay is less than a few seconds.</li>
-<li>In terms of their data model, events typically require the row key to be used as the Kafka event key (aka record/message key), which is the only way to ensure all events for the same DB table row go to the same Kafka topic-partition and are thus totally ordered. They also typically model deletes as tombstone events, i.e. an event with a non-null key and a null value. By ensuring totally ordered events for each row, consumers see an eventually-consistent representation of these events for each row.</li>
-</ul>
+<p>Events need to be correlated through the complex distributed workflow. The <a href="../../event/correlation-identifier/">Correlation Identifier</a> pattern describes a method of coupling Events when processed asyncronously by way of a global identifier which traverses the workflow within the events.</p>
 <h2 id="references">References</h2>
 <ul>
-<li>See <a href="https://docs.confluent.io/cloud/current/connectors/index.html">Integrate External Systems to Kafka</a> on Confluent documentation for information on source connectors.</li>
-<li><strong>TODO:</strong> What about well known CDC providers, like Debezium? </li>
+<li>TODO: pointers to related patterns?</li>
+<li>TODO: pointers to external material?</li>
 </ul>
               
             </div>
@@ -201,10 +192,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../event-source-connector/" class="btn btn-neutral float-right" title="Event Source Connector">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../event-stream-observer/" class="btn btn-neutral float-right" title="Event Stream Observer">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../database-write-aside/" class="btn btn-neutral" title="Database Write Aside"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../.." class="btn btn-neutral" title="Welcome to Event Streaming Patterns"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -230,10 +221,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../database-write-aside/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../event-source-connector/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../event-stream-observer/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

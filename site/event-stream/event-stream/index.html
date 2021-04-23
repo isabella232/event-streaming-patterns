@@ -51,8 +51,19 @@
                     <li class="toctree-l1"><a class="reference internal" href="../..">Welcome to Event Streaming Patterns</a>
                     </li>
                 </ul>
+                <p class="caption"><span class="caption-text">Compositional patterns</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-collaboration/">Event Collaboration</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-stream-observer/">Event Stream Observer</a>
+                    </li>
+                </ul>
                 <p class="caption"><span class="caption-text">Event</span></p>
                 <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event/correlation-identifier/">Correlation Identifier</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event/event-standardizer/">Event Standardizer</a>
+                    </li>
                     <li class="toctree-l1"><a class="reference internal" href="../../event/event/">Event</a>
                     </li>
                 </ul>
@@ -69,6 +80,8 @@
                     <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-processor/">Event Processor</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-router/">Event Router</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-translator/">Event Translator</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event sink</span></p>
@@ -109,6 +122,10 @@
     </ul>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../event-streaming-platform/">Event Streaming Platform</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../schema-compatibility/">Schema Compatibility</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../schema-evolution/">Schema Evolution</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Stream processing</span></p>
@@ -157,10 +174,10 @@
                 <h1 id="event-stream">Event Stream</h1>
 <p><a href="../../event/event/">Events</a> will typically be categorized by some attribute and will need to be grouped in order to be processed logically by <a href="../../event-processing/event-processor/">Event Processors</a>. </p>
 <h2 id="problem">Problem</h2>
-<p>How can Events be organized such that <a href="../../event-processing/event-processing-application/">Event Processing Applications</a> can consume only the relevant Events on a particular <a href="../event-streaming-platform/">Event Streaming Platform</a>.</p>
+<p>How does one <a href="../../event-processing/event-processing-application/">Event Processing Application</a> communicate events to other applications in an ordered, scalable, and reliable way?</p>
 <h2 id="solution">Solution</h2>
-<p><img alt="event-stream" src="../../img/event-stream.png" /></p>
-<p>Typically Event Streams are given a name along with other configurations like retention length. Events are published to the Event Streams creating a logical categorization of Events for Event Processing Applications to consume from.</p>
+<p><img alt="event-stream" src="../../img/event-stream.png" />
+Event Streams are a set of events recorded in the order in which they were written. Many Event Streaming applications can produce to or consume from an event stream. Event streams can either be consumed in their entirity or events can be distributed across a set of consuming event streaming application instances. (In Apache Kafka this is called a Consumer Group.) </p>
 <h2 id="implementation">Implementation</h2>
 <p><a href="">ksqlDB</a> supports <code>STREAM</code> processing natively and creating a stream from an existing stream can be accomplished using basic declarative SQL like syntax.</p>
 <pre><code>CREATE STREAM filtered AS SELECT col1, col2, col3 FROM source_stream;
