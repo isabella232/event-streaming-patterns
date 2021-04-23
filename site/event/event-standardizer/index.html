@@ -181,7 +181,7 @@
 <p><img alt="event-standardizer" src="../../img/event-standardizer.png" /></p>
 <p>Source all the input Event Streams into an Event Standardizer which routes Events to a specialized <a href="../../event-processing/event-translator/">Event Translator</a> which converts the Event to a normalized form expected by the downstream <a href="../../event-processing/event-processor/">Event Processors</a>.</p>
 <h2 id="implementation">Implementation</h2>
-<p>A <a href="https://kafka.apache.org/documentation/streams/">Kafka Streams</a> <a href="https://docs.confluent.io/platform/current/streams/architecture.html#processor-topology">Toplogy</a> can read from multiple input Event Streams and <code>map</code> the values to a new type. This <code>map</code> function can act as the event router, directing the Event to the proper <a href="../event/event-translator.md">Event Translator</a> before forwading it to the output stream using the <code>to</code> function.</p>
+<p>A <a href="https://kafka.apache.org/documentation/streams/">Kafka Streams</a> <a href="https://docs.confluent.io/platform/current/streams/architecture.html#processor-topology">Toplogy</a> can read from multiple input Event Streams and <code>map</code> the values to a new type. This <code>map</code> function can act as the event router, directing the Event to the proper Event Translator before forwading it to the output stream using the <code>to</code> function.</p>
 <pre><code>SpecificAvroSerde&lt;SpecificRecord&gt; inputValueSerde = ...
 builder
   .stream(List.of(&quot;inputStreamA&quot;, &quot;inputStreamB&quot;, &quot;inputStreamC&quot;),
