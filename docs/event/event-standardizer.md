@@ -10,7 +10,7 @@ How do I process events that are semantically equivalent, but arrive in differen
 Source all the input Event Streams into an Event Standardizer which routes Events to a specialized [Event Translator](../event-processing/event-translator.md) which converts the Event to a normalized form expected by the downstream [Event Processors](../event-processing/event-processor.md).
 
 ## Implementation
-A [Kafka Streams](https://kafka.apache.org/documentation/streams/) [Toplogy](https://docs.confluent.io/platform/current/streams/architecture.html#processor-topology) can read from multiple input Event Streams and `map` the values to a new type. This `map` function can act as the event router, directing the Event to the proper [Event Translator](../event/event-translator.md) before forwading it to the output stream using the `to` function.
+A [Kafka Streams](https://kafka.apache.org/documentation/streams/) [Toplogy](https://docs.confluent.io/platform/current/streams/architecture.html#processor-topology) can read from multiple input Event Streams and `map` the values to a new type. This `map` function can act as the event router, directing the Event to the proper Event Translator before forwading it to the output stream using the `to` function.
 
 ```
 SpecificAvroSerde<SpecificRecord> inputValueSerde = ...
