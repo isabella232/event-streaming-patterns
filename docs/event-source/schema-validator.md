@@ -9,7 +9,7 @@ How do I enforce that Events sent to an Event Stream conform to a defined schema
 A Schema Validator enforces the data format for Events prior to them being written to an Event Stream allowing Event Processing Applications to read Events based on a known schema.
 
 ## Implementation
-With Confluent, Schema Validation is enabled on the brokers by pairing them with a [Schema Registry]((https://docs.confluent.io/platform/current/schema-registry/index.html)): 
+With Confluent, Schema Validation is enabled on the brokers by pairing them with a [Schema Registry](https://docs.confluent.io/platform/current/schema-registry/index.html):
 ```
 confluent.schema.registry.url=http://schema-registry:8081 
 ```
