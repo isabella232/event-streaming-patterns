@@ -59,9 +59,9 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#solution-pattern">Solution Pattern</a>
+    <li class="toctree-l2"><a class="reference internal" href="#solution">Solution</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#example-implementation">Example Implementation</a>
+    <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#considerations">Considerations</a>
     </li>
@@ -176,19 +176,37 @@
             <div class="section">
               
                 <h1 id="event-stream-observer">Event Stream Observer</h1>
+<p>Many architectures have streams of events deployed across multiple datacenters spanning boundaries of event streaming platforms, datacenters, or geo-regions.
+In these situations, it may be useful for client applications in one datacenter to have access to events produced in another datacenter.
+All clients shouldn't be forced to read from the source datacenter, which can incur high latency and data egress costs.
+Instead, with a move-once-read-many approach, the data can be mirrored to the destination datacenter and then the client there can "observe" the data.</p>
 <h2 id="problem">Problem</h2>
-<p>How can multiple event streaming platforms be connected so that events available on one are also available on the others?</p>
-<h2 id="solution-pattern">Solution Pattern</h2>
-<p>TODO: Diagram
-TODO: Solution Text</p>
-<h2 id="example-implementation">Example Implementation</h2>
-<p>TODO: Example (ksqlDB preferred)</p>
+<p>How can multiple event streaming platforms be connected so that events available in one site are also available on the others?</p>
+<h2 id="solution">Solution</h2>
+<p><img alt="event-stream-observer" src="../../img/event-stream-observer.png" />
+Create a connection between the two systems, enabling the destination system to read from the source system.
+Ideally this is done in realtime such that as new events are published in the source datacenter, they can be immediately copied, byte for byte, to the destination datacenter.
+This allows the client applications in the destination to leverage the same set of data.</p>
+<h2 id="implementation">Implementation</h2>
+<p>Practically, replication is not enabled on two complete datacenters, as there are always exceptions, organizational limitations, technical constraints, or other reasons why you wouldn't want to copy absolutely everything.
+Instead, you can do this on a per topic basis, where you can map a source topic to a destination topic.</p>
+<p>With Apache Kafka, you can do this in one of several ways.</p>
+<p>Option 1: <a href="https://docs.confluent.io/cloud/current/multi-cloud/cluster-linking.html">Cluster Linking</a></p>
+<p>Cluster Linking enables easy data sharing between datacenters, mirroring topics across clusters.
+Because Cluster Linking uses native replication protocols, client applications can easily failover in the case of a disaster recovery scenario.</p>
+<pre><code>ccloud kafka link create east-west ...
+ccloud kafka topic create &lt;destination topic&gt; --link east-west --mirror-topic &lt;source topic&gt; ...
+</code></pre>
+
+<p>Option 2: <a href="https://kafka.apache.org/documentation/#georeplication">MirrorMaker</a></p>
+<p>Operators can set up such inter-cluster data flows with Kafka's MirrorMaker (version 2), a tool to replicate data between different Kafka environments.
+Unlike Cluster Linking, it's a separate service built upon Kafka Connect, with built-in producers and consumers.</p>
 <h2 id="considerations">Considerations</h2>
-<p>TODO: Considerations?</p>
+<p>Note that this type of replication between clusters is asynchronous, which means an event that is recorded in the source cluster may be available before that event is recorded in the destination cluster.
+There is also synchronous replication across clusters (e.g. <a href="https://docs.confluent.io/platform/current/multi-dc-deployments/index.html">Multi Region Clusters</a>) but this is often limited to when the datacenters are in the same operational domain.</p>
 <h2 id="references">References</h2>
 <ul>
-<li>TODO: pointers to external material?</li>
-<li>TODO: pointers to related patterns?</li>
+<li>This pattern is derived from <a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageBridge.html">Message Bridge</a> in Enterprise Integration Patterns by Gregor Hohpe and Bobby Woolf</li>
 </ul>
               
             </div>
