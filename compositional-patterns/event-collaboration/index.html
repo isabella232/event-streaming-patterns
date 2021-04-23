@@ -177,7 +177,7 @@
 <p>How can I build a distributed workflow in a way that allows components to evolve independently? </p>
 <h2 id="solution">Solution</h2>
 <p><img alt="event-collaboration" src="../../img/event-collaboration.png" /></p>
-<p>Event Collaboration allows services and applications to collaborate around a single business workflow on top of an <a href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>. Service components publish <a href="../event/events.md">Events</a> to <a href="../event-stream/event-streams.md">Event Streams</a> as notification of the completion of a step in the workflow. Stream Processing Applications observe the Events and trigger subsequent actions and resulting Events. The process repeats until the complex workflow is complete.</p>
+<p>Event Collaboration allows services and applications to collaborate around a single business workflow on top of an <a href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>. Service components publish <a href="../../event/event/">Events</a> to <a href="../../event-stream/event-stream/">Event Streams</a> as notification of the completion of a step in the workflow. Stream Processing Applications observe the Events and trigger subsequent actions and resulting Events. The process repeats until the complex workflow is complete.</p>
 <h2 id="considerations">Considerations</h2>
 <p>Events need to be correlated through the complex distributed workflow. The <a href="../../event/correlation-identifier/">Correlation Identifier</a> pattern describes a method of coupling Events when processed asyncronously by way of a global identifier which traverses the workflow within the events.</p>
 <h2 id="references">References</h2>
