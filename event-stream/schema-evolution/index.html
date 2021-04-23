@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Database Write Through - Event Streaming Patterns</title>
+  <title>Schema Evolution - Event Streaming Patterns</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Database Write Through";
-    var mkdocs_page_input_path = "event-source/database-write-through.md";
+    var mkdocs_page_name = "Schema Evolution";
+    var mkdocs_page_input_path = "event-stream/schema-evolution.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -92,10 +92,30 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event source</span></p>
-                <ul class="current">
-                    <li class="toctree-l1"><a class="reference internal" href="../database-write-aside/">Database Write Aside</a>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/database-write-aside/">Database Write Aside</a>
                     </li>
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Database Write Through</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/database-write-through/">Database Write Through</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/event-source-connector/">Event Source Connector</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/event-source/">Event Source</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Event storage</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/infinite-retention-event-stream/">Infinite Retention Event Stream</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">Event stream</span></p>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../event-stream/">Event Stream</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-streaming-platform/">Event Streaming Platform</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../schema-compatibility/">Schema Compatibility</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Schema Evolution</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
     </li>
@@ -108,26 +128,6 @@
     <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
     </li>
     </ul>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-source-connector/">Event Source Connector</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-source/">Event Source</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">Event storage</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/infinite-retention-event-stream/">Infinite Retention Event Stream</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">Event stream</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-stream/">Event Stream</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-compatibility/">Schema Compatibility</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-evolution/">Schema Evolution</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Stream processing</span></p>
@@ -158,11 +158,11 @@
     
       
         
-          <li>Event source &raquo;</li>
+          <li>Event stream &raquo;</li>
         
       
     
-    <li>Database Write Through</li>
+    <li>Schema Evolution</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -173,26 +173,24 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="database-write-through">Database Write Through</h1>
-<p>For architectural or legacy purposes, data centric applications may write directly to a database. <a href="../../event-processing/event-processing-application/">Event Processing Applications</a> will need to reliably consume data from these systems using <a href="../../event/event/">Events</a> on <a href="../../event-stream/event-stream/">Event Streams</a>.</p>
+                <h1 id="schema-evolution">Schema Evolution</h1>
+<p>An important aspect of data management is schema evolution.
+Similar to how APIs evolve and need to be compatible for all applications that rely on old and new versions of the API, schemas also evolve and likewise need to be compatible for all applications that rely on old and new versions of a schema.</p>
 <h2 id="problem">Problem</h2>
-<p>How do I update a value in a database and create an associated Event with at-least-once guarantees?</p>
+<p>How do I restructure or add new information to an event in a way that ensures <a href="../schema-compatibility/">Schema Compatibility</a>?</p>
 <h2 id="solution">Solution</h2>
-<p><img alt="db-write-through" src="../../img/database-write-through.png" /></p>
-<p>Applications write directly to a database table, which is the <a href="../event-source/">Event Source</a>. Deploy a Change Data Capture (CDC) solution to continuously capture writes (inserts, updates, deletes) to that table and produce them as Events onto an Event Stream.  The events in stream can then be consumed by Event Processing Applications. Additionally, the event stream can be read into a Projection Table, for example with ksqlDB, so that it can be queried by other applications.</p>
+<p><img alt="schema-evolution" src="../../img/schema-evolution-1.png" /></p>
+<p>One approach for evolving this schema is "in-place" (shown above), in which the single stream can have both new and previous schema versions in it, and the compatibility checks ensure that client applications can read schemas in both formats.</p>
+<p><img alt="schema-evolution" src="../../img/schema-evolution-2.png" /></p>
+<p>Another approach is "dual schema upgrades" (shown above), in which the event producers write to two streams, one stream with the new schema version and one stream with the previous schema version, and client applications consume from the one that they are compatible with.
+Once all consumers are upgraded to the new schema, the old stream can be retired.</p>
 <h2 id="implementation">Implementation</h2>
-<p><strong>TODO:</strong> Implementation for this pattern?  Kafka Connect config / create example?</p>
+<p>TODO: what implementation do we want to show?</p>
 <h2 id="considerations">Considerations</h2>
-<ul>
-<li>This pattern is a specialization of the <a href="../event-source-connector/">Event Source Connector</a> that guarantees that all state changes represented in an Event Source are captured in an Event Streaming Platform.</li>
-<li>The processing guarantees (cf. "Guaranteed Delivery") to choose from—e.g., at-least-once, exactly-once—for the CDC data flow depend on the CDC and Database technology utilizied.</li>
-<li>There is a certain delay until changes in the source database table are available in the CDC-ingested event stream. The amount of the delay depends on a variety of factors, including the features and configuration of the Event Source Connector. In many typical scenarios the delay is less than a few seconds.</li>
-<li>In terms of their data model, events typically require the row key to be used as the Kafka event key (aka record/message key), which is the only way to ensure all events for the same DB table row go to the same Kafka topic-partition and are thus totally ordered. They also typically model deletes as tombstone events, i.e. an event with a non-null key and a null value. By ensuring totally ordered events for each row, consumers see an eventually-consistent representation of these events for each row.</li>
-</ul>
+<p>TODO: considerations</p>
 <h2 id="references">References</h2>
 <ul>
-<li>See <a href="https://docs.confluent.io/cloud/current/connectors/index.html">Integrate External Systems to Kafka</a> on Confluent documentation for information on source connectors.</li>
-<li><strong>TODO:</strong> What about well known CDC providers, like Debezium? </li>
+<li><a href="https://docs.confluent.io/platform/current/schema-registry/avro.html#">Schema evolution and compatibility</a></li>
 </ul>
               
             </div>
@@ -201,10 +199,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../event-source-connector/" class="btn btn-neutral float-right" title="Event Source Connector">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../stream-processing/event-grouper/" class="btn btn-neutral float-right" title="Event Grouper">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../database-write-aside/" class="btn btn-neutral" title="Database Write Aside"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../schema-compatibility/" class="btn btn-neutral" title="Schema Compatibility"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -230,10 +228,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../database-write-aside/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../schema-compatibility/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../event-source-connector/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../stream-processing/event-grouper/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
