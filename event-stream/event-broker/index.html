@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Event Stream Observer - Event Streaming Patterns</title>
+  <title>Event Broker - Event Streaming Patterns</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Event Stream Observer";
-    var mkdocs_page_input_path = "compositional-patterns/event-stream-observer.md";
+    var mkdocs_page_name = "Event Broker";
+    var mkdocs_page_input_path = "event-stream/event-broker.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -52,22 +52,10 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Compositional patterns</span></p>
-                <ul class="current">
-                    <li class="toctree-l1"><a class="reference internal" href="../event-collaboration/">Event Collaboration</a>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-collaboration/">Event Collaboration</a>
                     </li>
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Event Stream Observer</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#solution">Solution</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#considerations">Considerations</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
-    </li>
-    </ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-stream-observer/">Event Stream Observer</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event</span></p>
@@ -124,16 +112,28 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event stream</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-broker/">Event Broker</a>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Event Broker</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#solution">Solution</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#considerations">Considerations</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
+    </li>
+    </ul>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-stream/">Event Stream</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-stream/">Event Stream</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-streaming-platform/">Event Streaming Platform</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-compatibility/">Schema Compatibility</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../schema-compatibility/">Schema Compatibility</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-evolution/">Schema Evolution</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../schema-evolution/">Schema Evolution</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Stream processing</span></p>
@@ -164,11 +164,11 @@
     
       
         
-          <li>Compositional patterns &raquo;</li>
+          <li>Event stream &raquo;</li>
         
       
     
-    <li>Event Stream Observer</li>
+    <li>Event Broker</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -179,38 +179,22 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="event-stream-observer">Event Stream Observer</h1>
-<p>Many architectures have streams of events deployed across multiple datacenters spanning boundaries of event streaming platforms, datacenters, or geo-regions.
-In these situations, it may be useful for client applications in one datacenter to have access to events produced in another datacenter.
-All clients shouldn't be forced to read from the source datacenter, which can incur high latency and data egress costs.
-Instead, with a move-once-read-many approach, the data can be mirrored to the destination datacenter and then the client there can "observe" the data.</p>
+                <h1 id="event-broker">Event Broker</h1>
+<p>Loosely coupled components allow my applications to change with minimal impact on dependent systems. This loose coupling also allows my development teams to efficiently work asynchronously with respect to one another. </p>
 <h2 id="problem">Problem</h2>
-<p>How can multiple event streaming platforms be connected so that events available in one site are also available on the others?</p>
+<p>How can I decouple event sources from event destinations?</p>
 <h2 id="solution">Solution</h2>
-<p><img alt="event-stream-observer" src="../../img/event-stream-observer.png" />
-Create a connection between the two systems, enabling the destination system to read from the source system.
-Ideally this is done in realtime such that as new events are published in the source datacenter, they can be immediately copied, byte for byte, to the destination datacenter.
-This allows the client applications in the destination to leverage the same set of data.</p>
+<p><img alt="event-broker" src="../../img/event-broker.png" /></p>
+<p>Use a central Event Broker that routes Events to related <a href="../event-stream/event-streams.md">Event Streams</a>. Producers of <a href="../../event/event/">Events</a> are isolated from the consumers of them. The components are coupled by a shared understanding of the name and data format of the shared Event Stream only. The Event Broker handles the complications of client applications connecting and disconnecting, and consumers are responsible for their individual progress of processing from the Event Stream.</p>
 <h2 id="implementation">Implementation</h2>
-<p>Practically, replication is not enabled on two complete datacenters, as there are always exceptions, organizational limitations, technical constraints, or other reasons why you wouldn't want to copy absolutely everything.
-Instead, you can do this on a per topic basis, where you can map a source topic to a destination topic.</p>
-<p>With Apache Kafka, you can do this in one of several ways.</p>
-<p>Option 1: <a href="https://docs.confluent.io/cloud/current/multi-cloud/cluster-linking.html">Cluster Linking</a></p>
-<p>Cluster Linking enables easy data sharing between datacenters, mirroring topics across clusters.
-Because Cluster Linking uses native replication protocols, client applications can easily failover in the case of a disaster recovery scenario.</p>
-<pre><code>ccloud kafka link create east-west ...
-ccloud kafka topic create &lt;destination topic&gt; --link east-west --mirror-topic &lt;source topic&gt; ...
-</code></pre>
-
-<p>Option 2: <a href="https://kafka.apache.org/documentation/#georeplication">MirrorMaker</a></p>
-<p>Operators can set up such inter-cluster data flows with Kafka's MirrorMaker (version 2), a tool to replicate data between different Kafka environments.
-Unlike Cluster Linking, it's a separate service built upon Kafka Connect, with built-in producers and consumers.</p>
+<p><a href="https://kafka.apache.org/">Apache Kafka</a> is an open-source distributed <a href="../event-streaming-platform/">Event Streaming Platform</a> which implements this Event Broker pattern. Kafka runs as a highly scalable and fault-tolerant cluster of brokers. In parallel, <a href="../../event-processing/event-processing-application/">Event Processing Applications</a> produce, consume, and process Events from the cluster using a loosely coupled but coordinated design.</p>
 <h2 id="considerations">Considerations</h2>
-<p>Note that this type of replication between clusters is asynchronous, which means an event that is recorded in the source cluster may be available before that event is recorded in the destination cluster.
-There is also synchronous replication across clusters (e.g. <a href="https://docs.confluent.io/platform/current/multi-dc-deployments/index.html">Multi Region Clusters</a>) but this is often limited to when the datacenters are in the same operational domain.</p>
+<ul>
+<li>Counter to traditional message brokers, Event Brokers provide a data persistence layer that allows client applications to initiate and resume Event production and consumption independently. </li>
+</ul>
 <h2 id="references">References</h2>
 <ul>
-<li>This pattern is derived from <a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageBridge.html">Message Bridge</a> in Enterprise Integration Patterns by Gregor Hohpe and Bobby Woolf</li>
+<li>This pattern is derived from <a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageBroker.html">Message Broker</a> in Enterprise Integration Patterns by Gregor Hohpe and Bobby Woolf</li>
 </ul>
               
             </div>
@@ -219,10 +203,10 @@ There is also synchronous replication across clusters (e.g. <a href="https://doc
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../event/correlation-identifier/" class="btn btn-neutral float-right" title="Correlation Identifier">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../event-stream/" class="btn btn-neutral float-right" title="Event Stream">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../event-collaboration/" class="btn btn-neutral" title="Event Collaboration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../event-storage/infinite-retention-event-stream/" class="btn btn-neutral" title="Infinite Retention Event Stream"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -248,10 +232,10 @@ There is also synchronous replication across clusters (e.g. <a href="https://doc
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../event-collaboration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../event-storage/infinite-retention-event-stream/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../../event/correlation-identifier/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../event-stream/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
