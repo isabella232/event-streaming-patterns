@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Event Broker - Event Streaming Patterns</title>
+  <title>Event Splitter - Event Streaming Patterns</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Event Broker";
-    var mkdocs_page_input_path = "event-stream/event-broker.md";
+    var mkdocs_page_name = "Event Splitter";
+    var mkdocs_page_input_path = "event-processing/event-splitter.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -68,24 +68,34 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event processing</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/dead-letter-stream/">Dead Letter Stream</a>
+                <ul class="current">
+                    <li class="toctree-l1"><a class="reference internal" href="../dead-letter-stream/">Dead Letter Stream</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-filter/">Event Filter</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-filter/">Event Filter</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-mapper/">Event Mapper</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-mapper/">Event Mapper</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-processing-application/">Event Processing Application</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-processing-application/">Event Processing Application</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-processor/">Event Processor</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-processor/">Event Processor</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-router/">Event Router</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-router/">Event Router</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-splitter/">Event Splitter</a>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Event Splitter</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#solution-pattern">Solution Pattern</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#considerations">Considerations</a>
+    </li>
+    </ul>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-streaming-api/">Event Streaming API</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-streaming-api/">Event Streaming API</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-translator/">Event Translator</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../event-translator/">Event Translator</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event sink</span></p>
@@ -116,28 +126,16 @@
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event stream</span></p>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Event Broker</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#solution">Solution</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#considerations">Considerations</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
-    </li>
-    </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-broker/">Event Broker</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-stream/">Event Stream</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-stream/">Event Stream</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-streaming-platform/">Event Streaming Platform</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../schema-compatibility/">Schema Compatibility</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-compatibility/">Schema Compatibility</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../schema-evolution/">Schema Evolution</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-evolution/">Schema Evolution</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Stream processing</span></p>
@@ -168,11 +166,11 @@
     
       
         
-          <li>Event stream &raquo;</li>
+          <li>Event processing &raquo;</li>
         
       
     
-    <li>Event Broker</li>
+    <li>Event Splitter</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -183,22 +181,33 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="event-broker">Event Broker</h1>
-<p>Loosely coupled components allow my applications to change with minimal impact on dependent systems. This loose coupling also allows my development teams to efficiently work asynchronously with respect to one another. </p>
+                <h1 id="event-splitter">Event Splitter</h1>
+<p>Event Splitter takes a single <a href="../event/events.md">event</a> and splits it into multiple events.</p>
 <h2 id="problem">Problem</h2>
-<p>How can I decouple event sources from event destinations?</p>
-<h2 id="solution">Solution</h2>
-<p><img alt="event-broker" src="../../img/event-broker.png" /></p>
-<p>Use a central Event Broker that routes Events to related <a href="../event-stream/event-streams.md">Event Streams</a>. Producers of <a href="../../event/event/">Events</a> are isolated from the consumers of them. The components are coupled by a shared understanding of the name and data format of the shared Event Stream only. The Event Broker handles the complications of client applications connecting and disconnecting, and consumers are responsible for their individual progress of processing from the Event Stream.</p>
+<p>How can I process an event if it contains multiple events, each of which may need to be processed in a different way?</p>
+<h2 id="solution-pattern">Solution Pattern</h2>
+<p><img alt="event-splitter" src="img/event-splitter.png" />
+First, split the original event into multiple child event. Most event processing technologies support this operation, for example the <code>EXPLODE()</code> table function in ksqlDB or the <code>flatMap()</code> operator in Kafka Streams. Then publish one event per child event. </p>
 <h2 id="implementation">Implementation</h2>
-<p><a href="https://kafka.apache.org/">Apache Kafka</a> is an open-source distributed <a href="../event-streaming-platform/">Event Streaming Platform</a> which implements this Event Broker pattern. Kafka runs as a highly scalable and fault-tolerant cluster of brokers. In parallel, <a href="../../event-processing/event-processing-application/">Event Processing Applications</a> produce, consume, and process Events from the cluster using a loosely coupled but coordinated design.</p>
+<pre><code>KStream&lt;Long, String&gt; stream = ...;
+KStream&lt;String, Integer&gt; transformed = stream.flatMap(
+     // Here, we generate two output records for each input record.
+     // We also change the key and value types.
+     // Example: (345L, &quot;Hello&quot;) -&gt; (&quot;HELLO&quot;, 1000), (&quot;hello&quot;, 9000)
+    (key, value) -&gt; {
+      List&lt;KeyValue&lt;String, Integer&gt;&gt; result = new LinkedList&lt;&gt;();
+      result.add(KeyValue.pair(value.toUpperCase(), 1000));
+      result.add(KeyValue.pair(value.toLowerCase(), 9000));
+      return result;
+    }
+  );
+</code></pre>
+
 <h2 id="considerations">Considerations</h2>
 <ul>
-<li>Counter to traditional message brokers, Event Brokers provide a data persistence layer that allows client applications to initiate and resume Event production and consumption independently. </li>
-</ul>
-<h2 id="references">References</h2>
-<ul>
-<li>This pattern is derived from <a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageBroker.html">Message Broker</a> in Enterprise Integration Patterns by Gregor Hohpe and Bobby Woolf</li>
+<li>Think about where the child events should be routed to, the same stream or a different stream. See <code>Event Router</code> on how to route events to different locations.</li>
+<li>Capacity planning and sizing: splitting the original event into N child events leads to write amplification, thereby increasing the volume of events that must be managed by the event streaming platform.</li>
+<li>Event Lineage: Your use case may require tracking the lineage of parent and child events. If so, ensure that the child events include a data field containing a reference to the original parent event, e.g. a unique identifier.</li>
 </ul>
               
             </div>
@@ -207,10 +216,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../event-stream/" class="btn btn-neutral float-right" title="Event Stream">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../event-streaming-api/" class="btn btn-neutral float-right" title="Event Streaming API">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../event-storage/infinite-retention-event-stream/" class="btn btn-neutral" title="Infinite Retention Event Stream"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../event-router/" class="btn btn-neutral" title="Event Router"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -236,10 +245,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../event-storage/infinite-retention-event-stream/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../event-router/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../event-stream/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../event-streaming-api/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
