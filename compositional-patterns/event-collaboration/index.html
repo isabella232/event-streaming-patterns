@@ -48,7 +48,7 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../..">Welcome to Event Streaming Patterns</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../..">Event Streaming Patterns</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Compositional patterns</span></p>
@@ -64,17 +64,6 @@
     <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
     </li>
     </ul>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-stream-observer/">Event Stream Observer</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">Event</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/correlation-identifier/">Correlation Identifier</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/event-standardizer/">Event Standardizer</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/event/">Event</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event processing</span></p>
@@ -92,10 +81,6 @@
                     <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-router/">Event Router</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-splitter/">Event Splitter</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-streaming-api/">Event Streaming API</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-translator/">Event Translator</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event sink</span></p>
@@ -115,27 +100,10 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../../event-source/event-source/">Event Source</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/schema-validator/">Schema Validator</a>
-                    </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event storage</span></p>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/compacted-event-stream/">Compacted Event Stream</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/infinite-retention-event-stream/">Infinite Retention Event Stream</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">Event stream</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-broker/">Event Broker</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-stream/">Event Stream</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-compatibility/">Schema Compatibility</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-evolution/">Schema Evolution</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/infiite-retention-event-stream/">Infinite Retention Event Stream</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Stream processing</span></p>
@@ -184,17 +152,21 @@
                 <h1 id="event-collaboration">Event Collaboration</h1>
 <p>Building distributed business workflows requires coordinating multiple services and <a href="../../event-processing/event-processing-application/">Event Processing Applications</a>. Business actions and reactions must be coordinated asynchronously as complex workflows transition through various states.</p>
 <h2 id="problem">Problem</h2>
-<p>How can I build a distributed workflow in a way that allows components to evolve independently? </p>
+<p>How can we build a distributed workflow in a way that allows components to evolve independently? </p>
 <h2 id="solution">Solution</h2>
 <p><img alt="event-collaboration" src="../../img/event-collaboration.png" /></p>
-<p>Event Collaboration allows services and applications to collaborate around a single business workflow on top of an <a href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>. Service components publish <a href="../../event/event/">Events</a> to <a href="../../event-stream/event-stream/">Event Streams</a> as notification of the completion of a step in the workflow. Stream Processing Applications observe the Events and trigger subsequent actions and resulting Events. The process repeats until the complex workflow is complete.</p>
+<p>Event Collaboration allows services and applications to collaborate around a single business workflow on top of an <a href="../event-stream/event-streaming-platform.md">Event Streaming Platform</a>. Service components publish <a href="../event/events.md">Events</a> to <a href="../event-stream/event-streams.md">Event Streams</a> as notification of the completion of a step in the workflow. The Events serve the additional purpose of carrying state information about the workflow which is used by downstream components in the next steps of the workflow. The process repeats the until the workflow is complete.</p>
 <h2 id="considerations">Considerations</h2>
-<p>Events need to be correlated through the complex distributed workflow. The <a href="../../event/correlation-identifier/">Correlation Identifier</a> pattern describes a method of coupling Events when processed asyncronously by way of a global identifier which traverses the workflow within the events.</p>
-<h2 id="references">References</h2>
 <ul>
-<li>TODO: pointers to related patterns?</li>
-<li>TODO: pointers to external material?</li>
+<li>
+<p>In Event Collaboration, the logic for the choreography of the progression of the business workflow is decentralized and spread across many components. This contrasts with traditional orchestration design where the logic is isolated in a dedicated "controller" service that coordinates the actions and reactions of the workflow components.</p>
+</li>
+<li>
+<p>With Event Collaboration, some workflow components will need to be able to ascertain the state of the workflow some time after they have generated their own Event. A classic example would be an order request service which generates a new order request event and wants to be notified when the order is complete. These Events need to be correlated through the distributed workflow to support such functionality. The <a href="../event/correlation-identifier.md">Correlation Identifier</a> pattern describes a method of coupling Events when processed asyncronously by way of a global identifier which traverses the workflow within the events.</p>
+</li>
 </ul>
+<h2 id="references">References</h2>
+<p><a href="https://martinfowler.com/eaaDev/EventCollaboration.html">Event Collaboration by Martin Fowler</a></p>
               
             </div>
           </div>
@@ -202,10 +174,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../event-stream-observer/" class="btn btn-neutral float-right" title="Event Stream Observer">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../event-processing/dead-letter-stream/" class="btn btn-neutral float-right" title="Dead Letter Stream">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../.." class="btn btn-neutral" title="Welcome to Event Streaming Patterns"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../.." class="btn btn-neutral" title="Event Streaming Patterns"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -234,7 +206,7 @@
         <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../event-stream-observer/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../event-processing/dead-letter-stream/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

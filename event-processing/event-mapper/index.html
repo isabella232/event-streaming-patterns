@@ -48,23 +48,12 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../..">Welcome to Event Streaming Patterns</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../..">Event Streaming Patterns</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Compositional patterns</span></p>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-collaboration/">Event Collaboration</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-stream-observer/">Event Stream Observer</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">Event</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/correlation-identifier/">Correlation Identifier</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/event-standardizer/">Event Standardizer</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/event/">Event</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event processing</span></p>
@@ -77,9 +66,9 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#solution">Solution</a>
+    <li class="toctree-l2"><a class="reference internal" href="#solution-pattern">Solution Pattern</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a>
+    <li class="toctree-l2"><a class="reference internal" href="#example-implementation">Example Implementation</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#considerations">Considerations</a>
     </li>
@@ -94,10 +83,6 @@
                     <li class="toctree-l1"><a class="reference internal" href="../event-router/">Event Router</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../event-splitter/">Event Splitter</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-streaming-api/">Event Streaming API</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-translator/">Event Translator</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event sink</span></p>
@@ -117,27 +102,10 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../../event-source/event-source/">Event Source</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/schema-validator/">Schema Validator</a>
-                    </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event storage</span></p>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/compacted-event-stream/">Compacted Event Stream</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/infinite-retention-event-stream/">Infinite Retention Event Stream</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">Event stream</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-broker/">Event Broker</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-stream/">Event Stream</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-compatibility/">Schema Compatibility</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-evolution/">Schema Evolution</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/infiite-retention-event-stream/">Infinite Retention Event Stream</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Stream processing</span></p>
@@ -184,47 +152,20 @@
             <div class="section">
               
                 <h1 id="event-mapper">Event Mapper</h1>
-<p>Traditional applications (operating with data at rest) and <a href="../event-processing-application/">Event Processing Applications</a> (with data in motion), may need to share data via the <a href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>. These applications will need a common mechanism to convert data from events to domain objects and vice versa.</p>
 <h2 id="problem">Problem</h2>
 <p>How do I move data between an application’s internal data model (with domain objects) and an event streaming platform (with events) while keeping the two independent of each other?</p>
-<h2 id="solution">Solution</h2>
+<h2 id="solution-pattern">Solution Pattern</h2>
 <p><img alt="event-mapper" src="../../img/event-mapper.png" /></p>
 <p>Event Mappers provide independence between the application and the event streaming platform so that neither is aware of the other, and ideally not even of the event mapper itself.</p>
 <p>Create (or use an existing) Event Mapper to map the Domain Model (or the application's internal data model) to the data formats accepted by the event streaming platform, and vice versa. The mapper reads the domain model and converts it into outgoing events that are sent to the event streaming platform. Conversely, a mapper can be used to create or update domain objects from incoming events.</p>
-<h2 id="implementation">Implementation</h2>
-<p>Using standard Kafka producer, you can use an abstract Mapper concept to construct an Event instance (<code>PublicationEvent</code>) representing the Domain Model (<code>Publication</code>) prior to producing to Kafka.</p>
-<pre><code>private final IMapper mapper = mapperFactory.buildMapper(Publication.class);
-private final Producer&lt;String, PublicationEvent&gt; producer = ...
-
-public void newPublication(String author, String title) {
-  Publication newPub = new Publication(author, title);
-  producer.send(author/*key*/, mapper.map(newPub));
-</code></pre>
-
-<p>An application wishing to convert <code>PublicationEvent</code> instances to Domain Object updates, can do so with a Mapper that can do the reverse operation:</p>
-<pre><code>private final IMapper mapper = mapperFactory.buildMapper(Publication.class);
-private final Consumer&lt;String, PublicationEvent&gt; consumer = ...
-
-public void updatePublication(PublicationEvent pubEvent) {
-  Publication newPub = mapper.map(pubEvent);
-  domainStore.update(newPub);
-</code></pre>
-
-<p><strong>TODO:</strong> Rick Feedback Request: How could we use ksqlDB or Kafka Streams her? The following KStreams example doesn't work to me because it's a stream processing application, but Mapper means to convert between domain objects and events. I'm not sure there is a logical way to "push" an event to a toplogy manually withouth producing to a topic.</p>
-<pre><code>IMapper mapper = mapperFactory.buildMapper(Publication.class);
-builder.stream(inputTopic, Consumed.with(Serdes.String(), publicationSerde))
-  .map((name, publication) -&gt; mapper.map(publication))
-  .to(outputTopic, Produced.with(Serdes.String(), publicationEventSerde));
-</code></pre>
-
+<h2 id="example-implementation">Example Implementation</h2>
+<p>TODO: Example?</p>
 <h2 id="considerations">Considerations</h2>
-<p><strong>TODO:</strong> Considerations?</p>
+<p>The mapper may optionally validate the schema of the converted objects, see "Schema Validation".</p>
 <h2 id="references">References</h2>
 <ul>
-<li>This pattern is derived from <a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessagingMapper.html">Messaging Mapper</a> in Enterprise Integration Patterns by Gregor Hohpe and Bobby Woolf</li>
-<li><strong>TODO:</strong> Reference to Event-Carried State Transfer?</li>
-<li><strong>TODO:</strong> Reference to Document Message / Event vs Command Message / Event?</li>
-<li><strong>TODO:</strong> Is Database Write Through / CDC a valid reference?</li>
+<li>TODO: Reference for Schema Validation </li>
+<li><a href="https://en.wikipedia.org/wiki/Domain_model">Domain Model</a></li>
 </ul>
               
             </div>

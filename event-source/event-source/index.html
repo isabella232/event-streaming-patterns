@@ -48,23 +48,12 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../..">Welcome to Event Streaming Patterns</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../..">Event Streaming Patterns</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Compositional patterns</span></p>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-collaboration/">Event Collaboration</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-stream-observer/">Event Stream Observer</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">Event</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/correlation-identifier/">Correlation Identifier</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/event-standardizer/">Event Standardizer</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/event/">Event</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event processing</span></p>
@@ -82,10 +71,6 @@
                     <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-router/">Event Router</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-splitter/">Event Splitter</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-streaming-api/">Event Streaming API</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-processing/event-translator/">Event Translator</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event sink</span></p>
@@ -107,35 +92,18 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#solution">Solution</a>
+    <li class="toctree-l2"><a class="reference internal" href="#solution-pattern">Solution Pattern</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a>
+    <li class="toctree-l2"><a class="reference internal" href="#example-implementation">Example Implementation</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
     </li>
     </ul>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../schema-validator/">Schema Validator</a>
-                    </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event storage</span></p>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/compacted-event-stream/">Compacted Event Stream</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/infinite-retention-event-stream/">Infinite Retention Event Stream</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">Event stream</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-broker/">Event Broker</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-stream/">Event Stream</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-compatibility/">Schema Compatibility</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-evolution/">Schema Evolution</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/infiite-retention-event-stream/">Infinite Retention Event Stream</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Stream processing</span></p>
@@ -182,13 +150,11 @@
             <div class="section">
               
                 <h1 id="event-source">Event Source</h1>
-<p>Various components in an <a href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a> will generate <a href="../../event/event/">Events</a>. An Event Source is the generalization of these components, and can include databases, <a href="../../event-processing/event-processing-application/">Event Processing Applications</a>, and web services. </p>
 <h2 id="problem">Problem</h2>
 <p>How can I record and distribute events generated by my application?</p>
-<h2 id="solution">Solution</h2>
+<h2 id="solution-pattern">Solution Pattern</h2>
 <p><img alt="event-source" src="../../img/event-source.png" /></p>
-<h2 id="implementation">Implementation</h2>
-<p><a href="https://ksqldb.io/">ksqlDB</a> provides a builtin <code>INSERT</code> syntax to directly write new Events directly to the <a href="../../event-stream/event-stream/">Event Stream</a>.</p>
+<h2 id="example-implementation">Example Implementation</h2>
 <pre><code>INSERT INTO foo (ROWTIME, KEY_COL, COL_A) VALUES (1510923225000, 'key', 'A');
 </code></pre>
 
@@ -203,7 +169,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../schema-validator/" class="btn btn-neutral float-right" title="Schema Validator">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../event-storage/infiite-retention-event-stream/" class="btn btn-neutral float-right" title="Infinite Retention Event Stream">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../event-source-connector/" class="btn btn-neutral" title="Event Source Connector"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -235,7 +201,7 @@
         <span><a href="../event-source-connector/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../schema-validator/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../event-storage/infiite-retention-event-stream/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

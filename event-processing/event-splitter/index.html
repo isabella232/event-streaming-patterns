@@ -48,23 +48,12 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../..">Welcome to Event Streaming Patterns</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../..">Event Streaming Patterns</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Compositional patterns</span></p>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-collaboration/">Event Collaboration</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../compositional-patterns/event-stream-observer/">Event Stream Observer</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">Event</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/correlation-identifier/">Correlation Identifier</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/event-standardizer/">Event Standardizer</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event/event/">Event</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event processing</span></p>
@@ -85,17 +74,15 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#problem">Problem</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#solution-pattern">Solution Pattern</a>
+    <li class="toctree-l2"><a class="reference internal" href="#solution">Solution</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#considerations">Considerations</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
+    </li>
     </ul>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-streaming-api/">Event Streaming API</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../event-translator/">Event Translator</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event sink</span></p>
@@ -115,27 +102,10 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../../event-source/event-source/">Event Source</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-source/schema-validator/">Schema Validator</a>
-                    </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Event storage</span></p>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/compacted-event-stream/">Compacted Event Stream</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/infinite-retention-event-stream/">Infinite Retention Event Stream</a>
-                    </li>
-                </ul>
-                <p class="caption"><span class="caption-text">Event stream</span></p>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-broker/">Event Broker</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-stream/">Event Stream</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/event-streaming-platform/">Event Streaming Platform</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-compatibility/">Schema Compatibility</a>
-                    </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../../event-stream/schema-evolution/">Schema Evolution</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../../event-storage/infiite-retention-event-stream/">Infinite Retention Event Stream</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">Stream processing</span></p>
@@ -182,22 +152,31 @@
             <div class="section">
               
                 <h1 id="event-splitter">Event Splitter</h1>
-<p>Event Splitter takes a single <a href="../event/events.md">event</a> and splits it into multiple events.</p>
+<p>One <a href="../event/events.md">Event</a> may actually contain multiple child events within it, each of which may need to be processed in different ways.</p>
 <h2 id="problem">Problem</h2>
-<p>How can I process an event if it contains multiple events, each of which may need to be processed in a different way?</p>
-<h2 id="solution-pattern">Solution Pattern</h2>
-<p><img alt="event-splitter" src="img/event-splitter.png" />
-First, split the original event into multiple child event. Most event processing technologies support this operation, for example the <code>EXPLODE()</code> table function in ksqlDB or the <code>flatMap()</code> operator in Kafka Streams. Then publish one event per child event. </p>
+<p>How can an <a href="../event/events.md">Event</a> be split into multiple events?</p>
+<h2 id="solution">Solution</h2>
+<p><img alt="event-splitter" src="../../img/event-splitter.png" />
+First, split the original event into multiple child events.
+Then, publish one event per child.</p>
 <h2 id="implementation">Implementation</h2>
-<pre><code>KStream&lt;Long, String&gt; stream = ...;
-KStream&lt;String, Integer&gt; transformed = stream.flatMap(
-     // Here, we generate two output records for each input record.
-     // We also change the key and value types.
-     // Example: (345L, &quot;Hello&quot;) -&gt; (&quot;HELLO&quot;, 1000), (&quot;hello&quot;, 9000)
-    (key, value) -&gt; {
+<p>Many event processing technologies support this operation.
+ksqlDB has the <code>EXPLODE()</code> table function which takes an array and outputs one value for each of the elements of the array.
+The example below processes each input event, un-nesting the array and generating new events for each element with new column names.</p>
+<pre><code>SELECT EXPLODE(TOTAL)-&gt;TOTALTYPE AS TOTAL_TYPE,
+             EXPLODE(TOTAL)-&gt;TOTALAMOUNT AS TOTAL_AMOUNT,
+             EXPLODE(TOTAL)-&gt;ID AS CUSTOMER_ID
+        FROM my_stream EMIT CHANGES;
+</code></pre>
+
+<p>Kafka Streams has an analogous method called <code>flatMap()</code>.
+The example below processes each input event, generating new events with new keys and values.</p>
+<pre><code class="java">KStream&lt;Long, String&gt; myStream = ...;
+KStream&lt;String, Integer&gt; splitStream = myStream.flatMap(
+    (eventKey, eventValue) -&gt; {
       List&lt;KeyValue&lt;String, Integer&gt;&gt; result = new LinkedList&lt;&gt;();
-      result.add(KeyValue.pair(value.toUpperCase(), 1000));
-      result.add(KeyValue.pair(value.toLowerCase(), 9000));
+      result.add(KeyValue.pair(eventValue.toUpperCase(), 1000));
+      result.add(KeyValue.pair(eventValue.toLowerCase(), 9000));
       return result;
     }
   );
@@ -205,9 +184,13 @@ KStream&lt;String, Integer&gt; transformed = stream.flatMap(
 
 <h2 id="considerations">Considerations</h2>
 <ul>
-<li>Think about where the child events should be routed to, the same stream or a different stream. See <code>Event Router</code> on how to route events to different locations.</li>
+<li>If child events need to be routed to different streams, see <a href="../event-router/">Event Router</a> for routing events to different locations.</li>
 <li>Capacity planning and sizing: splitting the original event into N child events leads to write amplification, thereby increasing the volume of events that must be managed by the event streaming platform.</li>
 <li>Event Lineage: Your use case may require tracking the lineage of parent and child events. If so, ensure that the child events include a data field containing a reference to the original parent event, e.g. a unique identifier.</li>
+</ul>
+<h2 id="references">References</h2>
+<ul>
+<li>This pattern is derived from <a href="https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html">Splitter</a> in Enterprise Integration Patterns by Gregor Hohpe and Bobby Woolf</li>
 </ul>
               
             </div>
@@ -216,7 +199,7 @@ KStream&lt;String, Integer&gt; transformed = stream.flatMap(
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../event-streaming-api/" class="btn btn-neutral float-right" title="Event Streaming API">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../event-sink/event-sink-connector/" class="btn btn-neutral float-right" title="Event Sink Connector">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../event-router/" class="btn btn-neutral" title="Event Router"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -248,7 +231,7 @@ KStream&lt;String, Integer&gt; transformed = stream.flatMap(
         <span><a href="../event-router/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../event-streaming-api/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../event-sink/event-sink-connector/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
