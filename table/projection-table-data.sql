@@ -1,0 +1,10 @@
+INSERT INTO package_checkins ( package_id, location ) VALUES ( 1, 'New York' );
+INSERT INTO package_checkins ( package_id, location ) VALUES ( 1, 'London' );
+INSERT INTO package_checkins ( package_id, location ) VALUES ( 2, 'London' );
+INSERT INTO package_checkins ( package_id, location ) VALUES ( 1, 'Paris' );
+INSERT INTO package_checkins ( package_id, location ) VALUES ( 3, 'Paris' );
+INSERT INTO package_checkins ( package_id, location ) VALUES ( 2, 'Paris' );
+INSERT INTO package_checkins ( package_id, location ) VALUES ( 3, 'London' );
+INSERT INTO package_checkins ( package_id, location ) VALUES ( 1, 'Rome' );
+INSERT INTO package_checkins ( package_id, location ) VALUES ( 2, 'Rome' );
+INSERT INTO package_checkins ( package_id, location ) VALUES ( 3, 'Washington' );
